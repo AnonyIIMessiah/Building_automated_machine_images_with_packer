@@ -1,0 +1,30 @@
+# ---
+# - hosts: all
+#   become_user: root
+#   become_method: sudo
+#   tasks:
+#     - name: Install nginx
+#       apt:
+#         name: nginx
+#         state: latest
+# ---
+- name: Install Nginx
+  hosts: all
+  become: yes # Run tasks with elevated privileges (sudo)
+
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+      when: ansible_distribution == 'Ubuntu' # For Ubuntu-based systems
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present # Ensure that Nginx is installed
+
+    - name: Start Nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: yes # Auto-start Nginx on system boot
